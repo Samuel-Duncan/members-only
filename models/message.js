@@ -14,7 +14,7 @@ const messageSchema = new mongoose.Schema({
     default: Date.now(),
   },
   author: {
-    type: mongoose.Schema.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
