@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
 
 const User = require('../models/user');
 
@@ -45,11 +46,15 @@ exports.signUpPost = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
 
+    // Hash password before creating the user object
+    const saltRounds = 10; // Adjust saltRounds as needed
+    const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+
     const user = new User({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
-      password: req.body.password,
+      password: hashedPassword,
     });
 
     if (!errors.isEmpty()) {
