@@ -1,0 +1,12 @@
+extends layout 
+
+block content 
+
+  h1 Please log in
+
+  form(action="/log-in" method="POST")
+    label(for="username") Email
+    input(type="text" name="username" placeholder="email")
+    label(for="password") Password
+    input(type="password" name="password")
+    button Log In

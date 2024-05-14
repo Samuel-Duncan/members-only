@@ -60,7 +60,7 @@ exports.signUpPost = [
       });
     } else {
       await user.save();
-      res.redirect('index');
+      res.redirect('/');
     }
   }),
 ];
