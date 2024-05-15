@@ -3,8 +3,8 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-  if (user)
-    span #{user.fullName}
+  if (currentUser)
+    span #{currentUser.fullName}
     br
     a(href="/log-out") Log out
   else 

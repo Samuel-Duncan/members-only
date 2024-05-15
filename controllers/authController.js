@@ -5,16 +5,34 @@ const bcrypt = require('bcryptjs');
 
 const User = require('../models/user');
 
-exports.logInGet = function (req, res, next) {
+exports.logInGet = (req, res, next) => {
   res.render('log_in_form', { title: 'Log In' });
 };
 
-exports.logInPost = passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/log-in',
-});
+exports.logInPost = (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return next(err); // Pass errors to next error handler
+    }
+    if (!user) {
+      // Login failed - display error message
+      res.render('log_in_form', {
+        title: 'Log In',
+        errorMessage: 'Invalid username or password', // Customize the message
+      });
+    } else {
+      // Login successful - redirect to home
+      req.logIn(user, (err) => {
+        if (err) {
+          return next(err);
+        }
+        return res.redirect('/');
+      });
+    }
+  })(req, res, next);
+};
 
-exports.signUpGet = function (req, res, next) {
+exports.signUpGet = (req, res, next) => {
   res.render('sign_up_form', { title: 'Sign Up' });
 };
 
@@ -86,7 +104,7 @@ exports.signUpPost = [
 
 // Log out user
 
-exports.logOutGet = function (req, res, next) {
+exports.logOutGet = (req, res, next) => {
   req.logout((err) => {
     if (err) {
       return next(err);
