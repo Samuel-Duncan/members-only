@@ -15,4 +15,9 @@ router.post('/log-in', authController.logInPost);
 /* GET log out page. */
 router.get('/log-out', authController.logOutGet);
 
+/* GET membership page. */
+router.get('/membership', authController.membershipGet);
+
+router.post('/membership', authController.membershipPost);
+
 module.exports = router;

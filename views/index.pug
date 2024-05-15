@@ -5,6 +5,16 @@ block content
   p Welcome to #{title}
   if (currentUser)
     span #{currentUser.fullName}
+    if (currentUser.membershipStatus)
+      span ★
+    if (currentUser.isAdmin)
+      span ♕
+      br
+    br
+    a(href="/new-message") New Message
+    br
+    if (!currentUser.membershipStatus)
+      a(href="/membership") Become a member
     br
     a(href="/log-out") Log out
   else 

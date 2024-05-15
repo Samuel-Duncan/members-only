@@ -103,7 +103,6 @@ exports.signUpPost = [
 ];
 
 // Log out user
-
 exports.logOutGet = (req, res, next) => {
   req.logout((err) => {
     if (err) {
@@ -112,3 +111,43 @@ exports.logOutGet = (req, res, next) => {
     res.redirect('/');
   });
 };
+
+// Membership
+exports.membershipGet = (req, res, next) => {
+  res.render('membership_form', { title: 'Membership' });
+};
+
+exports.membershipPost = [
+  // Validate and sanitize User data
+  body('passcode')
+    .trim()
+    .notEmpty()
+    .withMessage('Passcode is required!')
+    .matches('1996')
+    .withMessage('Passcode must be exactly 1996'),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      res.render('membership_form', {
+        title: 'Become a member!',
+        errors: errors.array(),
+      });
+      // Stop further execution if there are errors
+      return;
+    }
+    // Update only if validation passes (correct passcode)
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { membershipStatus: true },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.redirect('/');
+  }),
+];

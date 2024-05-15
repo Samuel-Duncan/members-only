@@ -1,0 +1,19 @@
+extends layout 
+
+block content 
+
+  h1 Become a member! 
+
+  form(action="" method="POST")
+    label(for="passcode") Passcode:
+    input(type="text" id="passcode" name="passcode" placeholder="passcode")
+
+    button Become a member
+
+  if errors 
+    ul 
+      for error in errors 
+        li!= error.msg
+
+  p Don't know passcode?
+  a(href='/') Return home
