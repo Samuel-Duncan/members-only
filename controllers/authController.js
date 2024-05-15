@@ -1,8 +1,22 @@
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
+const passport = require('../passport');
 const bcrypt = require('bcryptjs');
 
 const User = require('../models/user');
+
+exports.logInGet = function (req, res, next) {
+  res.render('log_in_form', { title: 'Log In' });
+};
+
+exports.logInPost = passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/log-in',
+});
+
+exports.signUpGet = function (req, res, next) {
+  res.render('sign_up_form', { title: 'Sign Up' });
+};
 
 exports.signUpPost = [
   // Validate and sanitize User data
@@ -27,7 +41,7 @@ exports.signUpPost = [
     .custom(async (value) => {
       const user = await User.findOne({ email: value });
       if (user) {
-        return false;
+        throw new Error('Email already exists!');
       }
       return true;
     })
@@ -65,7 +79,7 @@ exports.signUpPost = [
       });
     } else {
       await user.save();
-      res.redirect('/');
+      res.redirect('/log-in');
     }
   }),
 ];

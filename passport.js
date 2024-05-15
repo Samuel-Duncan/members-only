@@ -10,6 +10,7 @@ passport.use(
       if (!user) {
         return done(null, false, { message: 'Incorrect username' });
       }
+      // Match hashed password with actual password
       const match = await bcrypt.compare(password, user.password);
       if (!match) {
         return done(null, false, { message: 'Incorrect password' });
