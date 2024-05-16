@@ -24,14 +24,19 @@ block content
     a(href="/sign-up") Sign up
 
   if (messages && messages.length)
+    h2 Messages
     ul 
       each message in messages 
         li 
-          h2 #{message.title}
+          h3 #{message.title}
           p #{message.text}
-          if (currentUser)
+          if (currentUser && currentUser.membershipStatus)
             p #{message.author.firstName}
             p #{message.timestamp}
+            if (currentUser.isAdmin)
+              form(action='/delete-message' method='POST')
+                input(type='hidden' name='messageId' value=message._id)
+                button(type='submit') Delete Message
 
           
 

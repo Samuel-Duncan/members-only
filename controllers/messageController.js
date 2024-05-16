@@ -40,10 +40,12 @@ exports.newMessagePost = [
       });
     } else {
       await message.save();
-      const messages = await Message.find()
-        .sort({ timestamp: -1 })
-        .populate('author', 'firstName');
       res.redirect('/');
     }
   }),
 ];
+
+exports.messageDeletePost = asyncHandler(async (req, res, next) => {
+  const message = await Message.findByIdAndDelete(req.body.messageId);
+  res.redirect('/');
+});
