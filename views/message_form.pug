@@ -1,0 +1,19 @@
+extends layout 
+
+block content 
+
+  h1 #{title}
+
+  form(action="new-message" method="POST")
+    label(for="title") Title:
+    input(type="text" id="title" name="title" value=(undefined === message ? '' : message.title))
+
+    label(for="text") Message:
+    textarea(id="text" name="text" value=(undefined === message ? '' : message.text))
+
+    button(type="submit") Send Message
+
+  if errors 
+    ul 
+      for error in errors 
+        li!= error.msg

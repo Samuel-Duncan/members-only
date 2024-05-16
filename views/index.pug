@@ -17,7 +17,21 @@ block content
       a(href="/membership") Become a member
     br
     a(href="/log-out") Log out
+    br
   else 
     a(href="/log-in") Log in
     br
     a(href="/sign-up") Sign up
+
+  if (messages && messages.length)
+    ul 
+      each message in messages 
+        li 
+          h2 #{message.title}
+          p #{message.text}
+          if (currentUser)
+            p #{message.author.firstName}
+            p #{message.timestamp}
+
+          
+
