@@ -30,7 +30,7 @@ block content
         li 
           h3 #{message.title}
           p #{message.text}
-          if (currentUser && currentUser.membershipStatus)
+          if (currentUser && currentUser.membershipStatus || currentUser && currentUser.isAdmin)
             p #{message.author.firstName}
             p #{message.timestamp}
             if (currentUser.isAdmin)

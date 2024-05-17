@@ -6,9 +6,21 @@ const passport = require('./passport');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 require('dotenv').config();
+const compression = require('compression');
+const helmet = require('helmet');
+const RateLimit = require('express-rate-limit');
+//Config RateLimit
+const limiter = RateLimit({
+  windowsMs: 1 * 60 * 1000,
+  max: 20,
+});
+
+const logInLimiter = RateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 10,
+});
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
 const messageRouter = require('./routes/message');
 
@@ -20,7 +32,7 @@ mongoose.set('strictQuery', false);
 
 main().catch((err) => console.log(err));
 async function main() {
-  await mongoose.connect(process.env.MONGO_DB);
+  await mongoose.connect(process.env.MONGO_DB_PROD);
 }
 
 // view engine setup
@@ -33,7 +45,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: false, // Set to true for https in production
+      secure: true, // Set to true for https in production
       maxAge: 1000 * 60 * 60 * 24,
     }, // Session expires in 24 hours
   })
@@ -47,12 +59,13 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(compression());
+app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/', authRouter);
-app.use('/new-message', messageRouter);
+app.use('/', limiter, indexRouter);
+app.use('/', logInLimiter, authRouter);
+app.use('/new-message', limiter, messageRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
