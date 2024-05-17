@@ -39,13 +39,14 @@ async function main() {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+app.set('trust proxy', 1);
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: 'auto', // Set to true for https in production
+      secure: true, // Set to true for https in production
       maxAge: 1000 * 60 * 60 * 24,
     }, // Session expires in 24 hours
   })
